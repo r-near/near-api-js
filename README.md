@@ -77,6 +77,20 @@ Check out the [migration guide](MIGRATION.md) to help you move from the old `@ne
 
 `near-api-js` includes some advanced features to help you build robust applications.
 
+### Seed phrases and post-quantum keys
+
+The `near-api-js/seed-phrase` entry point supports opt-in [NEP-649](https://github.com/near/NEPs/pull/649) ML-DSA-65 derivation:
+
+```typescript
+import { generateSeedPhrase, parseSeedPhrase } from 'near-api-js/seed-phrase';
+
+const options = { keyType: 'ml-dsa-65' } as const;
+const { seedPhrase, keyPair } = generateSeedPhrase(options); // 24 words
+const recovered = parseSeedPhrase(seedPhrase, options);
+```
+
+Calls without options keep the existing Ed25519 derivation and 12-word generation. See [seed-phrase recovery](SEED_PHRASES.md) for custom paths, BIP39 passphrases, and recovering both key types.
+
 ### Simple Units Conversions
 
 You can easily convert between NEAR and yoctoNEAR, and between gas units:
