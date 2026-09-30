@@ -49,10 +49,12 @@ import { deriveSeedPhraseKeys } from 'near-api-js/seed-phrase';
 
 const candidates = deriveSeedPhraseKeys(seedPhrase);
 for (const { keyType, derivationPath, keyPair } of candidates) {
-    // Compare keyPair.getPublicKey() with the access keys on the account you own.
+    // Use this candidate in your recovery flow (see the RPC hash distinction below).
 }
 ```
 
 `deriveSeedPhraseKeys(seedPhrase, { passphrase })` returns four candidates: Ed25519 and ML-DSA-65, each at `m/44'/397'/0'` and `m/44'/397'/0'/0'/1'`. It only derives keys locally; it does not scan the network, identify accounts, add access keys, or search custom paths. Use `parseSeedPhrase` with the exact options when a custom path was used.
+
+ML-DSA-65 candidates contain full public keys. RPC access-key lists instead return `ml-dsa-65-hash:` handles, so their strings cannot be compared directly. NEP-645 defines the handle as `ml-dsa-65-hash:` plus base58 of SHA3-256 over the UTF-8 domain `near:ml-dsa-65-pubkey-hash:v1` concatenated with the raw 1952-byte public key. Account discovery and that RPC-handle matching remain the wallet application's responsibility.
 
 The derivation is implemented by `near-seed-phrase`. See [NEP-649](https://github.com/near/NEPs/pull/649) and its [independent reference vectors](https://github.com/vsavchyn-dev/NEPs/blob/cecbad372435edd17607a0a45401ab2cf5839fc8/neps/assets/nep-0649/test-vectors.json) for the algorithm and interoperability data.
