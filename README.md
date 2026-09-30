@@ -79,7 +79,7 @@ Check out the [migration guide](MIGRATION.md) to help you move from the old `@ne
 
 ### Seed phrases and post-quantum keys
 
-The `near-api-js/seed-phrase` entry point supports opt-in [NEP-649](https://github.com/near/NEPs/pull/649) ML-DSA-65 derivation:
+The `near-api-js/seed-phrase` entry point supports post-quantum keys through opt-in [draft NEP-649](https://github.com/near/NEPs/pull/649) ML-DSA-65 derivation:
 
 ```typescript
 import { generateSeedPhrase, parseSeedPhrase } from 'near-api-js/seed-phrase';
@@ -89,7 +89,9 @@ const { seedPhrase, keyPair } = generateSeedPhrase(options); // 24 words
 const recovered = parseSeedPhrase(seedPhrase, options);
 ```
 
-Calls without options keep the existing Ed25519 derivation and 12-word generation. See [seed-phrase recovery](SEED_PHRASES.md) for custom paths, BIP39 passphrases, and recovering both key types.
+Calls without options keep the existing Ed25519 derivation and 12-word generation. Both key types default to `m/44'/397'/0'`; options also accept `derivationPath` and a BIP39 `passphrase`.
+
+For wallet recovery, try both key types at `m/44'/397'/0'` and `m/44'/397'/0'/0'/1'`, or use the original custom path. The original passphrase is required: a different one produces a different valid key. ML-DSA-65 public-key strings differ from RPC `ml-dsa-65-hash:` handles; account discovery and handle matching remain the wallet's responsibility.
 
 ### Simple Units Conversions
 
